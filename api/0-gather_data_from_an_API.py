@@ -1,29 +1,33 @@
 #!/usr/bin/python3
 """ Importing and doing api"""
-import json
-import requests
-import sys
+from requests import get
+from sys import argv
 
 
 if __name__ == "__main__":
-    ''' In order for it to work'''
-    todos_api = requests.get(
-        'https://jsonplaceholder.typicode.com/todos/')
-    user_api = requests.get(
-        'https://jsonplaceholder.typicode.com/users/{}'.format(sys.argv[1]))
-    todo_data = todos_api.text
-    user_data = user_api.text
-    user = json.loads(user_data)
-    todos = json.loads(todo_data)
-    stored= []
-    all_todos = 0
-    for todo in todos:
-        if todo['userId'] == user['id']:
-            if todo['completed']:
-                stored.append(todo)
-            all_todos += 1
-    print(
-        'Employee {} is done with tasks({}/{}):'
-        .format(user['name'], len(stored), all_todos), file=sys.stdout)
-    for finished_todo in stored:
-        print('\t {}'.format(finished_todo['title']), file=sys.stdout)
+    ''' In order for to work'''
+    response = get('https://jsonplaceholder.typicode.com/todos/')
+    data = response.json()
+    completed = 0
+    total = 0
+    tasks = []
+    response2 = get('https://jsonplaceholder.typicode.com/users')
+    data2 = response2.json()
+
+    for i in data2:
+        if i.get('id') == int(argv[1]):
+            employee = i.get('name')
+
+    for i in data:
+        if i.get('userId') == int(argv[1]):
+            total += 1
+
+            if i.get('completed') is True:
+                completed += 1
+                tasks.append(i.get('title'))
+
+    print("Employee {} is done with tasks({}/{}):".format(employee, completed,
+                                                          total))
+
+    for i in tasks:
+        print("\t {}".format(i))
