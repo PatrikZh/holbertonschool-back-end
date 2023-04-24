@@ -1,8 +1,10 @@
 #!/usr/bin/python3
+""" Importing and doing api"""
 import requests
 import sys
 
 if __name__ == '__main__':
+    ''' In order for it to work'''
     user_id = sys.argv[1]
     url_users = 'https://jsonplaceholder.typicode.com/users/{}'.format(user_id)
     url_todos = 'https://jsonplaceholder.typicode.com/todos?userId={}'.format(user_id)
