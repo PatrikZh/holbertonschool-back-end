@@ -1,21 +1,29 @@
 #!/usr/bin/python3
 """ Importing and doing api"""
+import json
 import requests
 import sys
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     ''' In order for it to work'''
-    user_id = sys.argv[1]
-    url_users = 'https://jsonplaceholder.typicode.com/users/{}'.format(user_id)
-    url_todos = 'https://jsonplaceholder.typicode.com/todos?userId={}'.format(user_id)
-
-    response_users = requests.get(url_users)
-    response_todos = requests.get(url_todos)
-
-    user_name = response_users.json().get('name')
-    total_number_of_tasks = len(response_todos.json())
-    number_of_done_tasks = len([task for task in response_todos.json() if task.get('completed')])
-    tasks_titles = '\n\t'.join([task.get('title') for task in response_todos.json() if task.get('completed')])
-
-    print('Employee {} is done with tasks({}/{}):'.format(user_name, number_of_done_tasks, total_number_of_tasks))
-    print('\t{}'.format(tasks_titles))
+    todos_api = requests.get(
+        'https://jsonplaceholder.typicode.com/todos/')
+    user_api = requests.get(
+        'https://jsonplaceholder.typicode.com/users/{}'.format(sys.argv[1]))
+    todo_data = todos_api.text
+    user_data = user_api.text
+    user = json.loads(user_data)
+    todos = json.loads(todo_data)
+    stored= []
+    all_todos = 0
+    for todo in todos:
+        if todo['userId'] == user['id']:
+            if todo['completed']:
+                stored.append(todo)
+            all_todos += 1
+    print(
+        'Employee {} is done with tasks({}/{}):'
+        .format(user['name'], len(stored), all_todos), file=sys.stdout)
+    for finished_todo in stored:
+        print('\t {}'.format(finished_todo['title']), file=sys.stdout)
