@@ -15,6 +15,8 @@ if __name__ == "__main__":
     response2 = get('https://jsonplaceholder.typicode.com/users')
     data2 = response2.json()
 
+    task_count = 0  # add a counter for the number of tasks
+
     for i in data2:
         if i['id'] == int(argv[1]):
             employee = i['username']
@@ -32,3 +34,8 @@ if __name__ == "__main__":
                 row.append(i['title'])
 
                 writ.writerow(row)
+
+                task_count += 1  # increment the counter
+
+    print(f"Number of tasks in CSV: {task_count}")  # print the number of tasks at the end
+
